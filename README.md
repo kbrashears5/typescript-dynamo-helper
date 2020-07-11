@@ -5,7 +5,7 @@
 <b>Typescript helper functions for AWS Dynamo DB service</b>
     
 [![Build Status](https://dev.azure.com/kbrashears5/github/_apis/build/status/kbrashears5.typescript-aws-dynamo-helper?branchName=master)](https://dev.azure.com/kbrashears5/github/_build/latest?definitionId=19&branchName=master)
-[![Tedynamo](https://img.shields.io/azure-devops/tests/kbrashears5/github/19)](https://img.shields.io/azure-devops/tests/kbrashears5/github/19)
+[![Tests](https://img.shields.io/azure-devops/tests/kbrashears5/github/19)](https://img.shields.io/azure-devops/tests/kbrashears5/github/19)
 [![Code Coverage](https://img.shields.io/azure-devops/coverage/kbrashears5/github/19)](https://img.shields.io/azure-devops/coverage/kbrashears5/github/19)
 
 [![NPM Version](https://img.shields.io/npm/v/typescript-aws-dynamo-helper)](https://img.shields.io/npm/v/typescript-aws-dynamo-helper)
