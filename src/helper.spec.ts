@@ -2,51 +2,73 @@ import { DynamoHelper } from './helper';
 import { Logger, LogLevel } from 'typescript-ilogger';
 import { DynamoMock } from './mock';
 import { TestingValues } from './test-values';
+import { BatchWriteItemInput, BatchWriteItemOutput } from 'aws-sdk/clients/dynamodb';
 
 const logger = new Logger(LogLevel.Off);
 const mockerResolves = new DynamoMock(false);
-const DynamoHelperMockResolves = new DynamoHelper(logger,
+const dynamoHelperMockResolves = new DynamoHelper(logger,
     mockerResolves.Mock);
 const mockerRejects = new DynamoMock(true);
-const DynamoHelperMockRejects = new DynamoHelper(logger,
+const dynamoHelperMockRejects = new DynamoHelper(logger,
     mockerRejects.Mock);
-const TestValues = new TestingValues();
+const testValues = new TestingValues();
+
+/**
+ * Test the BatchWrite method
+ */
+describe(`${DynamoHelper.name}.${dynamoHelperMockResolves.BatchWriteAsync.name}`, () => {
+    // set action for this method
+    const action = `${DynamoHelper.name}.${dynamoHelperMockResolves.BatchWriteAsync.name}`;
+
+    test(`${testValues.ThrowsOnEmpty} batchRequest`, () => {
+        const actual = dynamoHelperMockResolves.BatchWriteAsync({} as BatchWriteItemInput);
+        return expect(actual).rejects.toThrow(`[${action}]-${testValues.MustSupply} batchRequest`);
+    });
+    test(`returns success`, async () => {
+        const params = {
+            RequestItems: {},
+        } as BatchWriteItemInput;
+        const actual = dynamoHelperMockResolves.BatchWriteAsync(params);
+
+        return expect(actual).resolves.toEqual({} as BatchWriteItemOutput);
+    });
+});
 
 /**
  * Test the DeleteItemByKeyAsync method
  */
-describe(`${DynamoHelper.name}.${DynamoHelperMockResolves.DeleteItemByKeyAsync.name}`, () => {
+describe(`${DynamoHelper.name}.${dynamoHelperMockResolves.DeleteItemByKeyAsync.name}`, () => {
     // set action for this method
-    const action = `${DynamoHelper.name}.${DynamoHelperMockResolves.DeleteItemByKeyAsync.name}`;
+    const action = `${DynamoHelper.name}.${dynamoHelperMockResolves.DeleteItemByKeyAsync.name}`;
 
-    test(`${TestValues.ThrowsOnEmpty} tableName`, () => {
-        const actual = DynamoHelperMockResolves.DeleteItemByKeyAsync(TestValues.EmptyString,
-            TestValues.Key,
-            TestValues.StringValue);
-        return expect(actual).rejects.toThrow(`[${action}]-${TestValues.MustSupply} tableName`);
+    test(`${testValues.ThrowsOnEmpty} tableName`, () => {
+        const actual = dynamoHelperMockResolves.DeleteItemByKeyAsync(testValues.EmptyString,
+            testValues.Key,
+            testValues.StringValue);
+        return expect(actual).rejects.toThrow(`[${action}]-${testValues.MustSupply} tableName`);
     });
-    test(`${TestValues.ThrowsOnEmpty} keyName`, () => {
-        const actual = DynamoHelperMockResolves.DeleteItemByKeyAsync(TestValues.Name,
-            TestValues.EmptyString,
-            TestValues.StringValue);
-        return expect(actual).rejects.toThrow(`[${action}]-${TestValues.MustSupply} keyName`);
+    test(`${testValues.ThrowsOnEmpty} keyName`, () => {
+        const actual = dynamoHelperMockResolves.DeleteItemByKeyAsync(testValues.Name,
+            testValues.EmptyString,
+            testValues.StringValue);
+        return expect(actual).rejects.toThrow(`[${action}]-${testValues.MustSupply} keyName`);
     });
-    test(`${TestValues.ThrowsOnEmpty} keyValue`, () => {
-        const actual = DynamoHelperMockResolves.DeleteItemByKeyAsync(TestValues.Name,
-            TestValues.Key,
-            TestValues.EmptyString);
-        return expect(actual).rejects.toThrow(`[${action}]-${TestValues.MustSupply} keyValue`);
+    test(`${testValues.ThrowsOnEmpty} keyValue`, () => {
+        const actual = dynamoHelperMockResolves.DeleteItemByKeyAsync(testValues.Name,
+            testValues.Key,
+            testValues.EmptyString);
+        return expect(actual).rejects.toThrow(`[${action}]-${testValues.MustSupply} keyValue`);
     });
-    test(TestValues.InvalidTest, () => {
-        const actual = DynamoHelperMockRejects.DeleteItemByKeyAsync(TestValues.Name,
-            TestValues.Key,
-            TestValues.StringValue);
-        return expect(actual).rejects.toThrow(TestValues.AWSError);
+    test(testValues.InvalidTest, () => {
+        const actual = dynamoHelperMockRejects.DeleteItemByKeyAsync(testValues.Name,
+            testValues.Key,
+            testValues.StringValue);
+        return expect(actual).rejects.toThrow(testValues.AWSError);
     });
-    test(TestValues.ValidTest, () => {
-        const actual = DynamoHelperMockResolves.DeleteItemByKeyAsync(TestValues.Name,
-            TestValues.Key,
-            TestValues.StringValue);
+    test(testValues.ValidTest, () => {
+        const actual = dynamoHelperMockResolves.DeleteItemByKeyAsync(testValues.Name,
+            testValues.Key,
+            testValues.StringValue);
         return expect(actual).resolves.toEqual(mockerResolves.DeleteItemOutput);
     });
 });
@@ -54,38 +76,38 @@ describe(`${DynamoHelper.name}.${DynamoHelperMockResolves.DeleteItemByKeyAsync.n
 /**
  * Test the GetItemByKeyAsync method
  */
-describe(`${DynamoHelper.name}.${DynamoHelperMockResolves.GetItemByKeyAsync.name}`, () => {
+describe(`${DynamoHelper.name}.${dynamoHelperMockResolves.GetItemByKeyAsync.name}`, () => {
     // set action for this method
-    const action = `${DynamoHelper.name}.${DynamoHelperMockResolves.GetItemByKeyAsync.name}`;
+    const action = `${DynamoHelper.name}.${dynamoHelperMockResolves.GetItemByKeyAsync.name}`;
 
-    test(`${TestValues.ThrowsOnEmpty} tableName`, () => {
-        const actual = DynamoHelperMockResolves.GetItemByKeyAsync(TestValues.EmptyString,
-            TestValues.Key,
-            TestValues.StringValue);
-        return expect(actual).rejects.toThrow(`[${action}]-${TestValues.MustSupply} tableName`);
+    test(`${testValues.ThrowsOnEmpty} tableName`, () => {
+        const actual = dynamoHelperMockResolves.GetItemByKeyAsync(testValues.EmptyString,
+            testValues.Key,
+            testValues.StringValue);
+        return expect(actual).rejects.toThrow(`[${action}]-${testValues.MustSupply} tableName`);
     });
-    test(`${TestValues.ThrowsOnEmpty} keyName`, () => {
-        const actual = DynamoHelperMockResolves.GetItemByKeyAsync(TestValues.Name,
-            TestValues.EmptyString,
-            TestValues.StringValue);
-        return expect(actual).rejects.toThrow(`[${action}]-${TestValues.MustSupply} keyName`);
+    test(`${testValues.ThrowsOnEmpty} keyName`, () => {
+        const actual = dynamoHelperMockResolves.GetItemByKeyAsync(testValues.Name,
+            testValues.EmptyString,
+            testValues.StringValue);
+        return expect(actual).rejects.toThrow(`[${action}]-${testValues.MustSupply} keyName`);
     });
-    test(`${TestValues.ThrowsOnEmpty} keyValue`, () => {
-        const actual = DynamoHelperMockResolves.GetItemByKeyAsync(TestValues.Name,
-            TestValues.Key,
-            TestValues.EmptyString);
-        return expect(actual).rejects.toThrow(`[${action}]-${TestValues.MustSupply} keyValue`);
+    test(`${testValues.ThrowsOnEmpty} keyValue`, () => {
+        const actual = dynamoHelperMockResolves.GetItemByKeyAsync(testValues.Name,
+            testValues.Key,
+            testValues.EmptyString);
+        return expect(actual).rejects.toThrow(`[${action}]-${testValues.MustSupply} keyValue`);
     });
-    test(TestValues.InvalidTest, () => {
-        const actual = DynamoHelperMockRejects.GetItemByKeyAsync(TestValues.Name,
-            TestValues.Key,
-            TestValues.StringValue);
-        return expect(actual).rejects.toThrow(TestValues.AWSError);
+    test(testValues.InvalidTest, () => {
+        const actual = dynamoHelperMockRejects.GetItemByKeyAsync(testValues.Name,
+            testValues.Key,
+            testValues.StringValue);
+        return expect(actual).rejects.toThrow(testValues.AWSError);
     });
-    test(TestValues.ValidTest, () => {
-        const actual = DynamoHelperMockResolves.GetItemByKeyAsync(TestValues.Name,
-            TestValues.Key,
-            TestValues.StringValue);
+    test(testValues.ValidTest, () => {
+        const actual = dynamoHelperMockResolves.GetItemByKeyAsync(testValues.Name,
+            testValues.Key,
+            testValues.StringValue);
         return expect(actual).resolves.toEqual(mockerResolves.GetItemOutput);
     });
 });
@@ -93,28 +115,28 @@ describe(`${DynamoHelper.name}.${DynamoHelperMockResolves.GetItemByKeyAsync.name
 /**
  * Test the PutItemByKeyAsync method
  */
-describe(`${DynamoHelper.name}.${DynamoHelperMockResolves.PutItemByKeyAsync.name}`, () => {
+describe(`${DynamoHelper.name}.${dynamoHelperMockResolves.PutItemByKeyAsync.name}`, () => {
     // set action for this method
-    const action = `${DynamoHelper.name}.${DynamoHelperMockResolves.PutItemByKeyAsync.name}`;
+    const action = `${DynamoHelper.name}.${dynamoHelperMockResolves.PutItemByKeyAsync.name}`;
 
-    test(`${TestValues.ThrowsOnEmpty} tableName`, () => {
-        const actual = DynamoHelperMockResolves.PutItemByKeyAsync(TestValues.EmptyString,
-            TestValues.Item);
-        return expect(actual).rejects.toThrow(`[${action}]-${TestValues.MustSupply} tableName`);
+    test(`${testValues.ThrowsOnEmpty} tableName`, () => {
+        const actual = dynamoHelperMockResolves.PutItemByKeyAsync(testValues.EmptyString,
+            testValues.Item);
+        return expect(actual).rejects.toThrow(`[${action}]-${testValues.MustSupply} tableName`);
     });
-    test(`${TestValues.ThrowsOnEmpty} item`, () => {
-        const actual = DynamoHelperMockResolves.PutItemByKeyAsync(TestValues.Name,
-            TestValues.EmptyObject);
-        return expect(actual).rejects.toThrow(`[${action}]-${TestValues.MustSupply} item`);
+    test(`${testValues.ThrowsOnEmpty} item`, () => {
+        const actual = dynamoHelperMockResolves.PutItemByKeyAsync(testValues.Name,
+            testValues.EmptyObject);
+        return expect(actual).rejects.toThrow(`[${action}]-${testValues.MustSupply} item`);
     });
-    test(TestValues.InvalidTest, () => {
-        const actual = DynamoHelperMockRejects.PutItemByKeyAsync(TestValues.Name,
-            TestValues.Item);
-        return expect(actual).rejects.toThrow(TestValues.AWSError);
+    test(testValues.InvalidTest, () => {
+        const actual = dynamoHelperMockRejects.PutItemByKeyAsync(testValues.Name,
+            testValues.Item);
+        return expect(actual).rejects.toThrow(testValues.AWSError);
     });
-    test(TestValues.ValidTest, () => {
-        const actual = DynamoHelperMockResolves.PutItemByKeyAsync(TestValues.Name,
-            TestValues.Item);
+    test(testValues.ValidTest, () => {
+        const actual = dynamoHelperMockResolves.PutItemByKeyAsync(testValues.Name,
+            testValues.Item);
         return expect(actual).resolves.toEqual(mockerResolves.GetItemOutput);
     });
 });
@@ -122,43 +144,43 @@ describe(`${DynamoHelper.name}.${DynamoHelperMockResolves.PutItemByKeyAsync.name
 /**
  * Test the ScanAsync method
  */
-describe(`${DynamoHelper.name}.${DynamoHelperMockResolves.ScanAsync.name}`, () => {
+describe(`${DynamoHelper.name}.${dynamoHelperMockResolves.ScanAsync.name}`, () => {
     // set action for this method
-    const action = `${DynamoHelper.name}.${DynamoHelperMockResolves.ScanAsync.name}`;
+    const action = `${DynamoHelper.name}.${dynamoHelperMockResolves.ScanAsync.name}`;
 
-    test(`${TestValues.ThrowsOnEmpty} tableName`, () => {
-        const actual = DynamoHelperMockResolves.ScanAsync(TestValues.EmptyString,
-            TestValues.ExpressionAttributeNameMap,
-            TestValues.ExpressionAttributeValueMap,
-            TestValues.Expression);
-        return expect(actual).rejects.toThrow(`[${action}]-${TestValues.MustSupply} tableName`);
+    test(`${testValues.ThrowsOnEmpty} tableName`, () => {
+        const actual = dynamoHelperMockResolves.ScanAsync(testValues.EmptyString,
+            testValues.ExpressionAttributeNameMap,
+            testValues.ExpressionAttributeValueMap,
+            testValues.Expression);
+        return expect(actual).rejects.toThrow(`[${action}]-${testValues.MustSupply} tableName`);
     });
-    test(`${TestValues.ThrowsOnEmpty} attributeNames`, () => {
-        const actual = DynamoHelperMockResolves.ScanAsync(TestValues.Name,
-            TestValues.EmptyObject,
-            TestValues.ExpressionAttributeValueMap,
-            TestValues.Expression);
-        return expect(actual).rejects.toThrow(`[${action}]-${TestValues.MustSupply} attributeNames`);
+    test(`${testValues.ThrowsOnEmpty} attributeNames`, () => {
+        const actual = dynamoHelperMockResolves.ScanAsync(testValues.Name,
+            testValues.EmptyObject,
+            testValues.ExpressionAttributeValueMap,
+            testValues.Expression);
+        return expect(actual).rejects.toThrow(`[${action}]-${testValues.MustSupply} attributeNames`);
     });
-    test(`${TestValues.ThrowsOnEmpty} attributeValues`, () => {
-        const actual = DynamoHelperMockResolves.ScanAsync(TestValues.Name,
-            TestValues.ExpressionAttributeNameMap,
-            TestValues.EmptyObject,
-            TestValues.Expression);
-        return expect(actual).rejects.toThrow(`[${action}]-${TestValues.MustSupply} attributeValues`);
+    test(`${testValues.ThrowsOnEmpty} attributeValues`, () => {
+        const actual = dynamoHelperMockResolves.ScanAsync(testValues.Name,
+            testValues.ExpressionAttributeNameMap,
+            testValues.EmptyObject,
+            testValues.Expression);
+        return expect(actual).rejects.toThrow(`[${action}]-${testValues.MustSupply} attributeValues`);
     });
-    test(TestValues.InvalidTest, () => {
-        const actual = DynamoHelperMockRejects.ScanAsync(TestValues.Name,
-            TestValues.ExpressionAttributeNameMap,
-            TestValues.ExpressionAttributeValueMap,
-            TestValues.Expression);
-        return expect(actual).rejects.toThrow(TestValues.AWSError);
+    test(testValues.InvalidTest, () => {
+        const actual = dynamoHelperMockRejects.ScanAsync(testValues.Name,
+            testValues.ExpressionAttributeNameMap,
+            testValues.ExpressionAttributeValueMap,
+            testValues.Expression);
+        return expect(actual).rejects.toThrow(testValues.AWSError);
     });
-    test(TestValues.ValidTest, () => {
-        const actual = DynamoHelperMockResolves.ScanAsync(TestValues.Name,
-            TestValues.ExpressionAttributeNameMap,
-            TestValues.ExpressionAttributeValueMap,
-            TestValues.Expression);
+    test(testValues.ValidTest, () => {
+        const actual = dynamoHelperMockResolves.ScanAsync(testValues.Name,
+            testValues.ExpressionAttributeNameMap,
+            testValues.ExpressionAttributeValueMap,
+            testValues.Expression);
         return expect(actual).resolves.toEqual(mockerResolves.ScanOutput);
     });
 });
@@ -166,98 +188,98 @@ describe(`${DynamoHelper.name}.${DynamoHelperMockResolves.ScanAsync.name}`, () =
 /**
  * Test the UpdateByKeyAsync method
  */
-describe(`${DynamoHelper.name}.${DynamoHelperMockResolves.UpdateByKeyAsync.name}`, () => {
+describe(`${DynamoHelper.name}.${dynamoHelperMockResolves.UpdateByKeyAsync.name}`, () => {
     // set action for this method
-    const action = `${DynamoHelper.name}.${DynamoHelperMockResolves.UpdateByKeyAsync.name}`;
+    const action = `${DynamoHelper.name}.${dynamoHelperMockResolves.UpdateByKeyAsync.name}`;
 
-    test(`${TestValues.ThrowsOnEmpty} tableName`, () => {
-        const actual = DynamoHelperMockResolves.UpdateByKeyAsync(TestValues.EmptyString,
-            TestValues.Key,
-            TestValues.StringValue,
-            TestValues.ExpressionAttributeNameMap,
-            TestValues.ExpressionAttributeValueMap,
-            TestValues.Expression,
-            TestValues.Expression);
-        return expect(actual).rejects.toThrow(`[${action}]-${TestValues.MustSupply} tableName`);
+    test(`${testValues.ThrowsOnEmpty} tableName`, () => {
+        const actual = dynamoHelperMockResolves.UpdateByKeyAsync(testValues.EmptyString,
+            testValues.Key,
+            testValues.StringValue,
+            testValues.ExpressionAttributeNameMap,
+            testValues.ExpressionAttributeValueMap,
+            testValues.Expression,
+            testValues.Expression);
+        return expect(actual).rejects.toThrow(`[${action}]-${testValues.MustSupply} tableName`);
     });
-    test(`${TestValues.ThrowsOnEmpty} keyName`, () => {
-        const actual = DynamoHelperMockResolves.UpdateByKeyAsync(TestValues.Name,
-            TestValues.EmptyString,
-            TestValues.StringValue,
-            TestValues.ExpressionAttributeNameMap,
-            TestValues.ExpressionAttributeValueMap,
-            TestValues.Expression,
-            TestValues.Expression);
-        return expect(actual).rejects.toThrow(`[${action}]-${TestValues.MustSupply} keyName`);
+    test(`${testValues.ThrowsOnEmpty} keyName`, () => {
+        const actual = dynamoHelperMockResolves.UpdateByKeyAsync(testValues.Name,
+            testValues.EmptyString,
+            testValues.StringValue,
+            testValues.ExpressionAttributeNameMap,
+            testValues.ExpressionAttributeValueMap,
+            testValues.Expression,
+            testValues.Expression);
+        return expect(actual).rejects.toThrow(`[${action}]-${testValues.MustSupply} keyName`);
     });
-    test(`${TestValues.ThrowsOnEmpty} keyValue`, () => {
-        const actual = DynamoHelperMockResolves.UpdateByKeyAsync(TestValues.Name,
-            TestValues.Key,
-            TestValues.EmptyString,
-            TestValues.ExpressionAttributeNameMap,
-            TestValues.ExpressionAttributeValueMap,
-            TestValues.Expression,
-            TestValues.Expression);
-        return expect(actual).rejects.toThrow(`[${action}]-${TestValues.MustSupply} keyValue`);
+    test(`${testValues.ThrowsOnEmpty} keyValue`, () => {
+        const actual = dynamoHelperMockResolves.UpdateByKeyAsync(testValues.Name,
+            testValues.Key,
+            testValues.EmptyString,
+            testValues.ExpressionAttributeNameMap,
+            testValues.ExpressionAttributeValueMap,
+            testValues.Expression,
+            testValues.Expression);
+        return expect(actual).rejects.toThrow(`[${action}]-${testValues.MustSupply} keyValue`);
     });
-    test(`${TestValues.ThrowsOnEmpty} attributeNames`, () => {
-        const actual = DynamoHelperMockResolves.UpdateByKeyAsync(TestValues.Name,
-            TestValues.Key,
-            TestValues.StringValue,
-            TestValues.EmptyObject,
-            TestValues.ExpressionAttributeValueMap,
-            TestValues.Expression,
-            TestValues.Expression);
-        return expect(actual).rejects.toThrow(`[${action}]-${TestValues.MustSupply} attributeNames`);
+    test(`${testValues.ThrowsOnEmpty} attributeNames`, () => {
+        const actual = dynamoHelperMockResolves.UpdateByKeyAsync(testValues.Name,
+            testValues.Key,
+            testValues.StringValue,
+            testValues.EmptyObject,
+            testValues.ExpressionAttributeValueMap,
+            testValues.Expression,
+            testValues.Expression);
+        return expect(actual).rejects.toThrow(`[${action}]-${testValues.MustSupply} attributeNames`);
     });
-    test(`${TestValues.ThrowsOnEmpty} attributeValues`, () => {
-        const actual = DynamoHelperMockResolves.UpdateByKeyAsync(TestValues.Name,
-            TestValues.Key,
-            TestValues.StringValue,
-            TestValues.ExpressionAttributeNameMap,
-            TestValues.EmptyObject,
-            TestValues.Expression,
-            TestValues.Expression);
-        return expect(actual).rejects.toThrow(`[${action}]-${TestValues.MustSupply} attributeValues`);
+    test(`${testValues.ThrowsOnEmpty} attributeValues`, () => {
+        const actual = dynamoHelperMockResolves.UpdateByKeyAsync(testValues.Name,
+            testValues.Key,
+            testValues.StringValue,
+            testValues.ExpressionAttributeNameMap,
+            testValues.EmptyObject,
+            testValues.Expression,
+            testValues.Expression);
+        return expect(actual).rejects.toThrow(`[${action}]-${testValues.MustSupply} attributeValues`);
     });
-    test(`${TestValues.ThrowsOnEmpty} conditionExpression`, () => {
-        const actual = DynamoHelperMockResolves.UpdateByKeyAsync(TestValues.Name,
-            TestValues.Key,
-            TestValues.StringValue,
-            TestValues.ExpressionAttributeNameMap,
-            TestValues.ExpressionAttributeValueMap,
-            TestValues.EmptyString,
-            TestValues.Expression);
-        return expect(actual).rejects.toThrow(`[${action}]-${TestValues.MustSupply} conditionExpression`);
+    test(`${testValues.ThrowsOnEmpty} conditionExpression`, () => {
+        const actual = dynamoHelperMockResolves.UpdateByKeyAsync(testValues.Name,
+            testValues.Key,
+            testValues.StringValue,
+            testValues.ExpressionAttributeNameMap,
+            testValues.ExpressionAttributeValueMap,
+            testValues.EmptyString,
+            testValues.Expression);
+        return expect(actual).rejects.toThrow(`[${action}]-${testValues.MustSupply} conditionExpression`);
     });
-    test(`${TestValues.ThrowsOnEmpty} updateExpression`, () => {
-        const actual = DynamoHelperMockResolves.UpdateByKeyAsync(TestValues.Name,
-            TestValues.Key,
-            TestValues.StringValue,
-            TestValues.ExpressionAttributeNameMap,
-            TestValues.ExpressionAttributeValueMap,
-            TestValues.Expression,
-            TestValues.EmptyString);
-        return expect(actual).rejects.toThrow(`[${action}]-${TestValues.MustSupply} updateExpression`);
+    test(`${testValues.ThrowsOnEmpty} updateExpression`, () => {
+        const actual = dynamoHelperMockResolves.UpdateByKeyAsync(testValues.Name,
+            testValues.Key,
+            testValues.StringValue,
+            testValues.ExpressionAttributeNameMap,
+            testValues.ExpressionAttributeValueMap,
+            testValues.Expression,
+            testValues.EmptyString);
+        return expect(actual).rejects.toThrow(`[${action}]-${testValues.MustSupply} updateExpression`);
     });
-    test(TestValues.InvalidTest, () => {
-        const actual = DynamoHelperMockRejects.UpdateByKeyAsync(TestValues.Name,
-            TestValues.Key,
-            TestValues.StringValue,
-            TestValues.ExpressionAttributeNameMap,
-            TestValues.ExpressionAttributeValueMap,
-            TestValues.Expression,
-            TestValues.Expression);
-        return expect(actual).rejects.toThrow(TestValues.AWSError);
+    test(testValues.InvalidTest, () => {
+        const actual = dynamoHelperMockRejects.UpdateByKeyAsync(testValues.Name,
+            testValues.Key,
+            testValues.StringValue,
+            testValues.ExpressionAttributeNameMap,
+            testValues.ExpressionAttributeValueMap,
+            testValues.Expression,
+            testValues.Expression);
+        return expect(actual).rejects.toThrow(testValues.AWSError);
     });
-    test(TestValues.ValidTest, () => {
-        const actual = DynamoHelperMockResolves.UpdateByKeyAsync(TestValues.Name,
-            TestValues.Key,
-            TestValues.StringValue,
-            TestValues.ExpressionAttributeNameMap,
-            TestValues.ExpressionAttributeValueMap,
-            TestValues.Expression,
-            TestValues.Expression);
+    test(testValues.ValidTest, () => {
+        const actual = dynamoHelperMockResolves.UpdateByKeyAsync(testValues.Name,
+            testValues.Key,
+            testValues.StringValue,
+            testValues.ExpressionAttributeNameMap,
+            testValues.ExpressionAttributeValueMap,
+            testValues.Expression,
+            testValues.Expression);
         return expect(actual).resolves.toEqual(mockerResolves.ScanOutput);
     });
 });

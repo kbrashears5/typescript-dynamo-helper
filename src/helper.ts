@@ -29,6 +29,25 @@ export class DynamoHelper extends BaseClass implements IDynamoHelper {
     }
 
     /**
+     * Batch delete or put
+     * @param batchRequest {AWS.DynamoDB.DocumentClient.BatchWriteItemInput} The batch request object, can be puts or deletes.
+     */
+    public async BatchWriteAsync(batchRequest: AWS.DynamoDB.DocumentClient.BatchWriteItemInput): Promise<AWS.DynamoDB.DocumentClient.BatchWriteItemOutput> {
+
+        const action = `${DynamoHelper.name}.${this.BatchWriteAsync.name}`;
+        this.LogHelper.LogInputs(action, { batchRequest });
+
+        if (this.ObjectOperations.IsNullOrEmpty(batchRequest)) { throw new Error(`[${action}]-Must supply batchRequest`); }
+
+        this.LogHelper.LogRequest(action, batchRequest);
+        const response = await this.Repository.batchWrite(batchRequest).promise();
+
+        this.LogHelper.LogResponse(action, response);
+
+        return response;
+    }
+
+    /**
      * Delete an item by key
      * @param tableName {string} Table name to delete from
      * @param keyName {string} Name of key column

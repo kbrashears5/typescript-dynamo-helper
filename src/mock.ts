@@ -11,6 +11,11 @@ export class DynamoMock extends BaseMock {
     /**
      * Mocks an AWS.DynamoDB.DocumentClient.DeleteItemOutput response
      */
+    public BatchWriteItemOutput: AWS.DynamoDB.DocumentClient.BatchWriteItemOutput = {};
+
+    /**
+     * Mocks an AWS.DynamoDB.DocumentClient.DeleteItemOutput response
+     */
     public DeleteItemOutput: AWS.DynamoDB.DocumentClient.DeleteItemOutput = {};
 
     /**
@@ -41,6 +46,14 @@ export class DynamoMock extends BaseMock {
 
         // implement the AWS responses
         const awsResponses = {
+            // batchWrite response
+            batchWrite: {
+                promise: jest.fn().mockImplementation(() => {
+                    return returnError ?
+                        Promise.reject(rejectResponse) :
+                        Promise.resolve<AWS.DynamoDB.DocumentClient.BatchWriteItemOutput>(this.BatchWriteItemOutput);
+                }),
+            },
             // delete response
             delete: {
                 promise: jest.fn().mockImplementation(() => {
@@ -86,6 +99,7 @@ export class DynamoMock extends BaseMock {
         // create the functions
         let functions = new AWS.DynamoDB.DocumentClient();
         functions = {
+            batchWrite: () => awsResponses.batchWrite,
             delete: () => awsResponses.delete,
             get: () => awsResponses.get,
             put: () => awsResponses.put,
