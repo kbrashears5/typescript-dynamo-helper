@@ -1,7 +1,5 @@
 import { BaseMock } from 'typescript-helper-functions';
-
-// tslint:disable-next-line: no-var-requires
-const AWS = require('aws-sdk');
+import * as DynamoDB from '@aws-sdk/client-dynamodb';
 
 /**
  * DynamoDB Mock class
@@ -9,34 +7,34 @@ const AWS = require('aws-sdk');
 export class DynamoMock extends BaseMock {
 
     /**
-     * Mocks an AWS.DynamoDB.DocumentClient.DeleteItemOutput response
+     * Mocks an DynamoDB.DeleteItemOutput response
      */
-    public BatchWriteItemOutput: AWS.DynamoDB.DocumentClient.BatchWriteItemOutput = {};
+    public BatchWriteItemOutput: DynamoDB.BatchWriteItemOutput = {};
 
     /**
-     * Mocks an AWS.DynamoDB.DocumentClient.DeleteItemOutput response
+     * Mocks an DynamoDB.DeleteItemOutput response
      */
-    public DeleteItemOutput: AWS.DynamoDB.DocumentClient.DeleteItemOutput = {};
+    public DeleteItemOutput: DynamoDB.DeleteItemOutput = {};
 
     /**
-     * Mocks an AWS.DynamoDB.DocumentClient.GetItemOutput response
+     * Mocks an DynamoDB.GetItemOutput response
      */
-    public GetItemOutput: AWS.DynamoDB.DocumentClient.GetItemOutput = {};
+    public GetItemOutput: DynamoDB.GetItemOutput = {};
 
     /**
-     * Mocks an AWS.DynamoDB.DocumentClient.PutItemOutput response
+     * Mocks an DynamoDB.PutItemOutput response
      */
-    public PutItemOutput: AWS.DynamoDB.DocumentClient.PutItemOutput = {};
+    public PutItemOutput: DynamoDB.PutItemOutput = {};
 
     /**
-     * Mocks an AWS.DynamoDB.DocumentClient.ScanOutput response
+     * Mocks an DynamoDB.ScanOutput response
      */
-    public ScanOutput: AWS.DynamoDB.DocumentClient.ScanOutput = {};
+    public ScanOutput: DynamoDB.ScanOutput = {};
 
     /**
-     * Mocks an AWS.DynamoDB.DocumentClient.UpdateItemOutput response
+     * Mocks an DynamoDB.UpdateItemOutput response
      */
-    public UpdateItemOutput: AWS.DynamoDB.DocumentClient.UpdateItemOutput = {};
+    public UpdateItemOutput: DynamoDB.UpdateItemOutput = {};
 
     /**
      * Create the DynamoDB mock
@@ -47,35 +45,35 @@ export class DynamoMock extends BaseMock {
         // implement the AWS responses
         const awsResponses = {
             // batchWrite response
-            batchWrite: {
+            batchWriteItem: {
                 promise: jest.fn().mockImplementation(() => {
                     return returnError ?
                         Promise.reject(rejectResponse) :
-                        Promise.resolve<AWS.DynamoDB.DocumentClient.BatchWriteItemOutput>(this.BatchWriteItemOutput);
+                        Promise.resolve<DynamoDB.BatchWriteItemOutput>(this.BatchWriteItemOutput);
                 }),
             },
             // delete response
-            delete: {
+            deleteItem: {
                 promise: jest.fn().mockImplementation(() => {
                     return returnError ?
                         Promise.reject(rejectResponse) :
-                        Promise.resolve<AWS.DynamoDB.DocumentClient.DeleteItemOutput>(this.DeleteItemOutput);
+                        Promise.resolve<DynamoDB.DeleteItemOutput>(this.DeleteItemOutput);
                 }),
             },
             // get response
-            get: {
+            getItem: {
                 promise: jest.fn().mockImplementation(() => {
                     return returnError ?
                         Promise.reject(rejectResponse) :
-                        Promise.resolve<AWS.DynamoDB.DocumentClient.GetItemOutput>(this.GetItemOutput);
+                        Promise.resolve<DynamoDB.GetItemOutput>(this.GetItemOutput);
                 }),
             },
             // put response
-            put: {
+            putItem: {
                 promise: jest.fn().mockImplementation(() => {
                     return returnError ?
                         Promise.reject(rejectResponse) :
-                        Promise.resolve<AWS.DynamoDB.DocumentClient.PutItemOutput>(this.PutItemOutput);
+                        Promise.resolve<DynamoDB.PutItemOutput>(this.PutItemOutput);
                 }),
             },
             // scan response
@@ -83,28 +81,30 @@ export class DynamoMock extends BaseMock {
                 promise: jest.fn().mockImplementation(() => {
                     return returnError ?
                         Promise.reject(rejectResponse) :
-                        Promise.resolve<AWS.DynamoDB.DocumentClient.ScanOutput>(this.ScanOutput);
+                        Promise.resolve<DynamoDB.ScanOutput>(this.ScanOutput);
                 }),
             },
             // update response
-            update: {
+            updateItem: {
                 promise: jest.fn().mockImplementation(() => {
                     return returnError ?
                         Promise.reject(rejectResponse) :
-                        Promise.resolve<AWS.DynamoDB.DocumentClient.UpdateItemOutput>(this.UpdateItemOutput);
+                        Promise.resolve<DynamoDB.UpdateItemOutput>(this.UpdateItemOutput);
                 }),
             },
         };
 
+        const options = {} as DynamoDB.DynamoDBClientConfig;
+
         // create the functions
-        let functions = new AWS.DynamoDB.DocumentClient();
+        let functions = new DynamoDB.DynamoDB(options);
         functions = {
-            batchWrite: () => awsResponses.batchWrite,
-            delete: () => awsResponses.delete,
-            get: () => awsResponses.get,
-            put: () => awsResponses.put,
+            batchWriteItem: () => awsResponses.batchWriteItem,
+            deleteItem: () => awsResponses.deleteItem,
+            getItem: () => awsResponses.getItem,
+            putItem: () => awsResponses.putItem,
             scan: () => awsResponses.scan,
-            update: () => awsResponses.update,
+            updateItem: () => awsResponses.updateItem,
         };
 
         return functions;

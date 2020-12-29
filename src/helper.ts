@@ -1,8 +1,8 @@
-import * as AWS from 'aws-sdk';
+import * as DynamoDB from '@aws-sdk/client-dynamodb';
 import { ILogger } from 'typescript-ilogger';
 import { IDynamoHelper } from './interface';
 import { BaseClass } from 'typescript-helper-functions';
-import { Any } from './any';
+import { Any, AttributeName, AttributeValue } from './any';
 
 /**
  * DynamoDB Helper
@@ -12,27 +12,28 @@ export class DynamoHelper extends BaseClass implements IDynamoHelper {
     /**
      * AWS Repository for DynamoDB
      */
-    public Repository: AWS.DynamoDB.DocumentClient;
+    public Repository: DynamoDB.DynamoDB;
 
     /**
      * Initializes new instance of DynamoDBHelper
      * @param logger {ILogger} Injected logger
-     * @param repository {AWS.DynamoDB.DocumentClient} Injected Repository. A new repository will be created if not supplied
-     * @param options {AWS.DynamoDB.ClientConfiguration} Injected configuration if a Repository is supplied
+     * @param repository {DynamoDB.DynamoDB} Injected Repository. A new repository will be created if not supplied
+     * @param options {DynamoDB.ClientConfiguration} Injected configuration if a Repository is supplied
      */
     constructor(logger: ILogger,
-        repository?: AWS.DynamoDB.DocumentClient,
-        options?: AWS.DynamoDB.ClientConfiguration) {
+        repository?: DynamoDB.DynamoDB,
+        options?: DynamoDB.DynamoDBClientConfig) {
 
         super(logger);
-        this.Repository = repository || new AWS.DynamoDB.DocumentClient(options);
+        options = this.ObjectOperations.IsNullOrEmpty(options) ? { region: 'us-east-1' } as DynamoDB.DynamoDBClientConfig : options!;
+        this.Repository = repository || new DynamoDB.DynamoDB(options);
     }
 
     /**
      * Batch delete or put
-     * @param batchRequest {AWS.DynamoDB.DocumentClient.BatchWriteItemInput} The batch request object, can be puts or deletes.
+     * @param batchRequest {DynamoDB.BatchWriteItemInput} The batch request object, can be puts or deletes.
      */
-    public async BatchWriteAsync(batchRequest: AWS.DynamoDB.DocumentClient.BatchWriteItemInput): Promise<AWS.DynamoDB.DocumentClient.BatchWriteItemOutput> {
+    public async BatchWriteAsync(batchRequest: DynamoDB.BatchWriteItemInput): Promise<DynamoDB.BatchWriteItemOutput> {
 
         const action = `${DynamoHelper.name}.${this.BatchWriteAsync.name}`;
         this.LogHelper.LogInputs(action, { batchRequest });
@@ -40,7 +41,7 @@ export class DynamoHelper extends BaseClass implements IDynamoHelper {
         if (this.ObjectOperations.IsNullOrEmpty(batchRequest)) { throw new Error(`[${action}]-Must supply batchRequest`); }
 
         this.LogHelper.LogRequest(action, batchRequest);
-        const response = await this.Repository.batchWrite(batchRequest).promise();
+        const response = await this.Repository.batchWriteItem(batchRequest);
 
         this.LogHelper.LogResponse(action, response);
 
@@ -55,7 +56,7 @@ export class DynamoHelper extends BaseClass implements IDynamoHelper {
      */
     public async DeleteItemByKeyAsync(tableName: string,
         keyName: string,
-        keyValue: string | number): Promise<AWS.DynamoDB.DocumentClient.DeleteItemOutput> {
+        keyValue: string | number): Promise<DynamoDB.DeleteItemOutput> {
 
         const action = `${DynamoHelper.name}.${this.DeleteItemByKeyAsync.name}`;
         this.LogHelper.LogInputs(action, { tableName, keyName, keyValue });
@@ -70,14 +71,14 @@ export class DynamoHelper extends BaseClass implements IDynamoHelper {
         attributeMap[keyName] = keyValue;
 
         // create params object
-        const params: AWS.DynamoDB.DocumentClient.DeleteItemInput = {
+        const params: DynamoDB.DeleteItemInput = {
             Key: attributeMap,
             TableName: tableName,
         };
         this.LogHelper.LogRequest(action, params);
 
         // make AWS call
-        const response = await this.Repository.delete(params).promise();
+        const response = await this.Repository.deleteItem(params);
         this.LogHelper.LogResponse(action, response);
 
         return response;
@@ -91,7 +92,7 @@ export class DynamoHelper extends BaseClass implements IDynamoHelper {
      */
     public async GetItemByKeyAsync(tableName: string,
         keyName: string,
-        keyValue: string | number): Promise<AWS.DynamoDB.DocumentClient.GetItemOutput> {
+        keyValue: string | number): Promise<DynamoDB.GetItemOutput> {
 
         const action = `${DynamoHelper.name}.${this.GetItemByKeyAsync.name}`;
         this.LogHelper.LogInputs(action, { tableName, keyName, keyValue });
@@ -106,14 +107,14 @@ export class DynamoHelper extends BaseClass implements IDynamoHelper {
         attributeMap[keyName] = keyValue;
 
         // create params object
-        const params: AWS.DynamoDB.DocumentClient.GetItemInput = {
+        const params: DynamoDB.GetItemInput = {
             Key: attributeMap,
             TableName: tableName,
         };
         this.LogHelper.LogRequest(action, params);
 
         // make AWS call
-        const response = await this.Repository.get(params).promise();
+        const response = await this.Repository.getItem(params);
         this.LogHelper.LogResponse(action, response);
 
         return response;
@@ -124,8 +125,8 @@ export class DynamoHelper extends BaseClass implements IDynamoHelper {
      * @param tableName {string} Table name to put item in
      * @param item {T extends object} Item to put
      */
-    public async PutItemByKeyAsync<T extends object>(tableName: string,
-        item: T): Promise<AWS.DynamoDB.DocumentClient.GetItemOutput> {
+    public async PutItemByKeyAsync<T extends AttributeValue>(tableName: string,
+        item: T): Promise<DynamoDB.GetItemOutput> {
 
         const action = `${DynamoHelper.name}.${this.PutItemByKeyAsync.name}`;
         this.LogHelper.LogInputs(action, { tableName, item });
@@ -135,14 +136,14 @@ export class DynamoHelper extends BaseClass implements IDynamoHelper {
         if (!item || Object.keys(item).length === 0) { throw new Error(`[${action}]-Must supply item`); }
 
         // create params object
-        const params: AWS.DynamoDB.DocumentClient.PutItemInput = {
+        const params: DynamoDB.PutItemInput = {
             Item: item,
             TableName: tableName,
         };
         this.LogHelper.LogRequest(action, params);
 
         // make AWS call
-        const response = await this.Repository.put(params).promise();
+        const response = await this.Repository.putItem(params);
         this.LogHelper.LogResponse(action, response);
 
         return response;
@@ -151,18 +152,18 @@ export class DynamoHelper extends BaseClass implements IDynamoHelper {
     /**
      * Scan a table
      * @param tableName {string} Table name to scan from
-     * @param attributeNames {AWS.DynamoDB.DocumentClient.ExpressionAttributeNameMap} Map of attribute names
-     * @param attributeValues {AWS.DynamoDB.DocumentClient.ExpressionAttributeValueMap} Map of attribute values
+     * @param attributeNames {AttributeName} Map of attribute names
+     * @param attributeValues {AttributeValue} Map of attribute values
      * @param expression {string} Filter expression
      * @param attributesToReturn {string} Attributes to return. Default is ALL_ATTRIBUTES
-     * @param lastEvaluatedKey {AWS.DynamoDB.DocumentClient.Key} LastEvaluatedKey of response. Supplied by recursion
+     * @param lastEvaluatedKey {AttributeValue} LastEvaluatedKey of response. Supplied by recursion
      */
     public async ScanAsync(tableName: string,
-        attributeNames: AWS.DynamoDB.DocumentClient.ExpressionAttributeNameMap,
-        attributeValues: AWS.DynamoDB.DocumentClient.ExpressionAttributeValueMap,
+        attributeNames: AttributeName,
+        attributeValues: AttributeValue,
         expression: string,
         attributesToReturn?: string,
-        lastEvaluatedKey?: AWS.DynamoDB.DocumentClient.Key): Promise<AWS.DynamoDB.DocumentClient.ScanOutput> {
+        lastEvaluatedKey?: AttributeValue): Promise<DynamoDB.ScanOutput> {
 
         const action = `${DynamoHelper.name}.${this.ScanAsync.name}`;
         this.LogHelper.LogInputs(action, { tableName, attributeNames, attributeValues, expression, attributesToReturn, lastEvaluatedKey });
@@ -177,7 +178,7 @@ export class DynamoHelper extends BaseClass implements IDynamoHelper {
         if (this.ObjectOperations.IsNullOrWhitespace(attributesToReturn)) { attributesToReturn = 'ALL_ATTRIBUTES'; }
 
         // create params object
-        const params: AWS.DynamoDB.DocumentClient.ScanInput = {
+        const params: DynamoDB.ScanInput = {
             ExpressionAttributeNames: attributeNames,
             ExpressionAttributeValues: attributeValues,
             FilterExpression: expression,
@@ -188,7 +189,7 @@ export class DynamoHelper extends BaseClass implements IDynamoHelper {
         this.LogHelper.LogRequest(action, params);
 
         // make AWS call
-        const response = await this.Repository.scan(params).promise();
+        const response = await this.Repository.scan(params);
         this.LogHelper.LogResponse(action, response);
 
         // recursively call the function if LastEvaluatedKey is present
@@ -215,18 +216,18 @@ export class DynamoHelper extends BaseClass implements IDynamoHelper {
      * @param tableName {string} Table name to update in
      * @param keyName {string} Name of key column
      * @param keyValue {string | number} Value of key column
-     * @param attributeNames {AWS.DynamoDB.DocumentClient.ExpressionAttributeNameMap} Map of attribute names
-     * @param attributeValues {AWS.DynamoDB.DocumentClient.ExpressionAttributeValueMap} Map of attribute values
+     * @param attributeNames {AttributeName} Map of attribute names
+     * @param attributeValues {AttributeValue} Map of attribute values
      * @param conditionExpression {string} Condition expression
      * @param updateExpression {string} Update expression
      */
     public async UpdateByKeyAsync(tableName: string,
         keyName: string,
         keyValue: string | number,
-        attributeNames: AWS.DynamoDB.DocumentClient.ExpressionAttributeNameMap,
-        attributeValues: AWS.DynamoDB.DocumentClient.ExpressionAttributeValueMap,
+        attributeNames: AttributeName,
+        attributeValues: AttributeValue,
         conditionExpression: string,
-        updateExpression: string): Promise<AWS.DynamoDB.DocumentClient.ScanOutput> {
+        updateExpression: string): Promise<DynamoDB.ScanOutput> {
 
         const action = `${DynamoHelper.name}.${this.UpdateByKeyAsync.name}`;
         this.LogHelper.LogInputs(action, { tableName, keyName, keyValue, attributeNames, attributeValues, conditionExpression, updateExpression });
@@ -245,7 +246,7 @@ export class DynamoHelper extends BaseClass implements IDynamoHelper {
         attributeMap[keyName] = keyValue;
 
         // create params object
-        const params: AWS.DynamoDB.DocumentClient.UpdateItemInput = {
+        const params: DynamoDB.UpdateItemInput = {
             ConditionExpression: conditionExpression,
             ExpressionAttributeNames: attributeNames,
             ExpressionAttributeValues: attributeValues,
@@ -256,7 +257,7 @@ export class DynamoHelper extends BaseClass implements IDynamoHelper {
         this.LogHelper.LogRequest(action, params);
 
         // make AWS call
-        const response = await this.Repository.update(params).promise();
+        const response = await this.Repository.updateItem(params);
         this.LogHelper.LogResponse(action, response);
 
         return response;

@@ -2,7 +2,7 @@ import { DynamoHelper } from './helper';
 import { Logger, LogLevel } from 'typescript-ilogger';
 import { DynamoMock } from './mock';
 import { TestingValues } from './test-values';
-import { BatchWriteItemInput, BatchWriteItemOutput } from 'aws-sdk/clients/dynamodb';
+import { BatchWriteItemInput, BatchWriteItemOutput } from '@aws-sdk/client-dynamodb';
 
 const logger = new Logger(LogLevel.Off);
 const mockerResolves = new DynamoMock(false);
