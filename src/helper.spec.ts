@@ -6,11 +6,9 @@ import { BatchWriteItemInput, BatchWriteItemOutput } from '@aws-sdk/client-dynam
 
 const logger = new Logger(LogLevel.Off);
 const mockerResolves = new DynamoMock(false);
-const dynamoHelperMockResolves = new DynamoHelper(logger,
-    mockerResolves.Mock);
+const dynamoHelperMockResolves = new DynamoHelper(logger, mockerResolves.Mock);
 const mockerRejects = new DynamoMock(true);
-const dynamoHelperMockRejects = new DynamoHelper(logger,
-    mockerRejects.Mock);
+const dynamoHelperMockRejects = new DynamoHelper(logger, mockerRejects.Mock);
 const testValues = new TestingValues();
 
 /**
