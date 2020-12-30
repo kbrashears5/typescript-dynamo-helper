@@ -6,11 +6,6 @@ import * as DynamoDB from '@aws-sdk/client-dynamodb';
  */
 export interface IDynamoHelper {
     /**
-     * AWS Repository for DynamoDB
-     */
-    Repository: DynamoDB.DynamoDB;
-
-    /**
      * Delete an item by key
      * @param tableName {string} Table name to delete from
      * @param keyName {string} Name of key column

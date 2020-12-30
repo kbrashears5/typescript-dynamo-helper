@@ -12,13 +12,13 @@ export class DynamoHelper extends BaseClass implements IDynamoHelper {
     /**
      * AWS Repository for DynamoDB
      */
-    public Repository: DynamoDB.DynamoDB;
+    private Repository: DynamoDB.DynamoDB;
 
     /**
      * Initializes new instance of DynamoDBHelper
      * @param logger {ILogger} Injected logger
      * @param repository {DynamoDB.DynamoDB} Injected Repository. A new repository will be created if not supplied
-     * @param options {DynamoDB.ClientConfiguration} Injected configuration if a Repository is supplied
+     * @param options {DynamoDB.DynamoDBClientConfig} Injected configuration if a Repository is supplied
      */
     constructor(logger: ILogger,
         repository?: DynamoDB.DynamoDB,
