@@ -1,4 +1,5 @@
-import { Any } from './any';
+import { Any, AttributeName, AttributeValue } from './any';
+import * as DynamoDB from '@aws-sdk/client-dynamodb';
 
 /**
  * Test values
@@ -24,6 +25,7 @@ export class TestingValues {
 
     // objects
     public Item: Any = { Key: this.StringValue };
-    public ExpressionAttributeNameMap: AWS.DynamoDB.DocumentClient.ExpressionAttributeNameMap = { Key: this.Key };
-    public ExpressionAttributeValueMap: AWS.DynamoDB.DocumentClient.ExpressionAttributeValueMap = { Key: this.Key };
+    public AttributeValue = {} as DynamoDB.AttributeValue;
+    public ExpressionAttributeNameMap: AttributeName = { Key: this.Key };
+    public ExpressionAttributeValueMap: AttributeValue = { Key: this.AttributeValue };
 }
