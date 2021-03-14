@@ -38,15 +38,17 @@ const response = await helper.GetItemByKeyAsync(
 ### Running in separate account or not in Lambda
 
 ```typescript
+import * as DynamoDB from '@aws-sdk/client-dynamodb';
+
 const logger = new Logger(LogLevel.Trace);
 
-const options: AWS.DynamoDB.ClientConfiguration = {
+const options: DynamoDB.DynamoDBClientConfig = {
   accessKeyId: '{access_key}',
   secretAccessKey: '{secret_key}',
   region: 'us-east-1',
 };
 
-const repository = new AWS.DynamoDB(options);
+const repository = new DynamoDB.DynamoDB(options);
 
 const helper = new DynamoHelper(logger, repository);
 
