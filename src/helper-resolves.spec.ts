@@ -113,7 +113,7 @@ describe(`${DynamoHelper.name}.${dynamoHelperMock.DeleteItemByKeyAsync.name}`, (
       `[${action}]-${testValues.MustSupply} keyValue`,
     );
   });
-  test(testValues.ValidTest, () => {
+  test(`${testValues.ValidTest}`, () => {
     const actual = dynamoHelperMock.DeleteItemByKeyAsync(
       testValues.Name,
       testValues.Key,
@@ -160,7 +160,7 @@ describe(`${DynamoHelper.name}.${dynamoHelperMock.GetItemByKeyAsync.name}`, () =
       `[${action}]-${testValues.MustSupply} keyValue`,
     );
   });
-  test(testValues.ValidTest, () => {
+  test(`${testValues.ValidTest}`, () => {
     const actual = dynamoHelperMock.GetItemByKeyAsync(
       testValues.Name,
       testValues.Key,
@@ -195,7 +195,7 @@ describe(`${DynamoHelper.name}.${dynamoHelperMock.PutItemByKeyAsync.name}`, () =
       `[${action}]-${testValues.MustSupply} item`,
     );
   });
-  test(testValues.ValidTest, () => {
+  test(`${testValues.ValidTest}`, () => {
     const actual = dynamoHelperMock.PutItemByKeyAsync(
       testValues.Name,
       testValues.Item,
@@ -244,7 +244,7 @@ describe(`${DynamoHelper.name}.${dynamoHelperMock.ScanAsync.name}`, () => {
       `[${action}]-${testValues.MustSupply} attributeValues`,
     );
   });
-  test(testValues.ValidTest, () => {
+  test(`${testValues.ValidTest}`, () => {
     const actual = dynamoHelperMock.ScanAsync(
       testValues.Name,
       testValues.ExpressionAttributeNameMap,
@@ -360,7 +360,7 @@ describe(`${DynamoHelper.name}.${dynamoHelperMock.UpdateByKeyAsync.name}`, () =>
       `[${action}]-${testValues.MustSupply} updateExpression`,
     );
   });
-  test(testValues.ValidTest, () => {
+  test(`${testValues.ValidTest}`, () => {
     const actual = dynamoHelperMock.UpdateByKeyAsync(
       testValues.Name,
       testValues.Key,

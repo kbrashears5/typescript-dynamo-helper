@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { AttributeName, AttributeValue } from './any';
 import * as DynamoDB from '@aws-sdk/client-dynamodb';
 

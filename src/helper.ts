@@ -25,9 +25,11 @@ export class DynamoHelper extends BaseClass implements IDynamoHelper {
     options?: DynamoDB.DynamoDBClientConfig,
   ) {
     super(logger);
+    // eslint-disable-next-line no-param-reassign
     options = this.ObjectOperations.IsNullOrEmpty(options)
       ? ({ region: 'us-east-1' } as DynamoDB.DynamoDBClientConfig)
-      : options!;
+      : // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        options!;
     this.Repository = repository || new DynamoDB.DynamoDB(options);
   }
 
@@ -216,6 +218,7 @@ export class DynamoHelper extends BaseClass implements IDynamoHelper {
 
     // set defaults
     if (this.ObjectOperations.IsNullOrWhitespace(attributesToReturn)) {
+      // eslint-disable-next-line no-param-reassign
       attributesToReturn = 'ALL_ATTRIBUTES';
     }
 

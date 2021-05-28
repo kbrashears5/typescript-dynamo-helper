@@ -1,3 +1,4 @@
+/* eslint-disable no-invalid-this */
 import { Any, AttributeName, AttributeValue } from './any';
 import * as DynamoDB from '@aws-sdk/client-dynamodb';
 
@@ -6,22 +7,22 @@ import * as DynamoDB from '@aws-sdk/client-dynamodb';
  */
 export class TestingValues {
   // descriptions
-  public AWSError: string = 'AWS Error';
-  public InvalidTest: string = 'returns error from AWS';
-  public MustSupply: string = 'Must supply';
-  public ThrowsOnEmpty: string = 'throws on empty';
-  public ValidTest: string = 'returns valid response from AWS';
+  public AWSError = 'AWS Error';
+  public InvalidTest = 'returns error from AWS';
+  public MustSupply = 'Must supply';
+  public ThrowsOnEmpty = 'throws on empty';
+  public ValidTest = 'returns valid response from AWS';
 
   // empty values
   public EmptyArray = [];
   public EmptyObject = {};
-  public EmptyString: string = '';
+  public EmptyString = '';
 
   // strings
-  public Expression: string = 'expression';
-  public Key: string = 'key';
-  public Name: string = 'name';
-  public StringValue: string = 'value';
+  public Expression = 'expression';
+  public Key = 'key';
+  public Name = 'name';
+  public StringValue = 'value';
 
   // objects
   public Item: Any = { Key: this.StringValue };

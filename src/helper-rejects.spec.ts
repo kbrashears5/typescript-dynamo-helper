@@ -48,7 +48,7 @@ const testValues = new TestingValues();
  * Test the BatchWriteAsync method
  */
 describe(`${DynamoHelper.name}.${dynamoHelperMock.BatchWriteAsync.name}`, () => {
-  test(testValues.InvalidTest, () => {
+  test(`${testValues.InvalidTest}`, () => {
     const params = {
       RequestItems: {},
     } as DynamoDB.BatchWriteItemInput;
@@ -61,7 +61,7 @@ describe(`${DynamoHelper.name}.${dynamoHelperMock.BatchWriteAsync.name}`, () => 
  * Test the DeleteItemByKeyAsync method
  */
 describe(`${DynamoHelper.name}.${dynamoHelperMock.DeleteItemByKeyAsync.name}`, () => {
-  test(testValues.InvalidTest, () => {
+  test(`${testValues.InvalidTest}`, () => {
     const actual = dynamoHelperMock.DeleteItemByKeyAsync(
       testValues.Name,
       testValues.Key,
@@ -75,7 +75,7 @@ describe(`${DynamoHelper.name}.${dynamoHelperMock.DeleteItemByKeyAsync.name}`, (
  * Test the GetItemByKeyAsync method
  */
 describe(`${DynamoHelper.name}.${dynamoHelperMock.GetItemByKeyAsync.name}`, () => {
-  test(testValues.InvalidTest, () => {
+  test(`${testValues.InvalidTest}`, () => {
     const actual = dynamoHelperMock.GetItemByKeyAsync(
       testValues.Name,
       testValues.Key,
@@ -89,7 +89,7 @@ describe(`${DynamoHelper.name}.${dynamoHelperMock.GetItemByKeyAsync.name}`, () =
  * Test the PutItemByKeyAsync method
  */
 describe(`${DynamoHelper.name}.${dynamoHelperMock.PutItemByKeyAsync.name}`, () => {
-  test(testValues.InvalidTest, () => {
+  test(`${testValues.InvalidTest}`, () => {
     const actual = dynamoHelperMock.PutItemByKeyAsync(
       testValues.Name,
       testValues.Item,
@@ -102,7 +102,7 @@ describe(`${DynamoHelper.name}.${dynamoHelperMock.PutItemByKeyAsync.name}`, () =
  * Test the ScanAsync method
  */
 describe(`${DynamoHelper.name}.${dynamoHelperMock.ScanAsync.name}`, () => {
-  test(testValues.InvalidTest, () => {
+  test(`${testValues.InvalidTest}`, () => {
     const actual = dynamoHelperMock.ScanAsync(
       testValues.Name,
       testValues.ExpressionAttributeNameMap,
@@ -117,7 +117,7 @@ describe(`${DynamoHelper.name}.${dynamoHelperMock.ScanAsync.name}`, () => {
  * Test the UpdateByKeyAsync method
  */
 describe(`${DynamoHelper.name}.${dynamoHelperMock.UpdateByKeyAsync.name}`, () => {
-  test(testValues.InvalidTest, () => {
+  test(`${testValues.InvalidTest}`, () => {
     const actual = dynamoHelperMock.UpdateByKeyAsync(
       testValues.Name,
       testValues.Key,
