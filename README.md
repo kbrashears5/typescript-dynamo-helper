@@ -5,7 +5,7 @@
 <b>Typescript helper functions for AWS Dynamo DB service</b>
     
 [![CI/CD](https://github.com/kbrashears5/typescript-aws-dynamo-helper/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/kbrashears5/typescript-aws-dynamo-helper/actions/workflows/ci-cd.yml)
-
+[![codecov](https://codecov.io/gh/kbrashears5/typescript-aws-dynamo-helper/branch/master/graph/badge.svg?token=T6OZM1I750)](https://codecov.io/gh/kbrashears5/typescript-aws-dynamo-helper)
 [![NPM Version](https://img.shields.io/npm/v/typescript-aws-dynamo-helper)](https://img.shields.io/npm/v/typescript-aws-dynamo-helper)
 [![Downloads](https://img.shields.io/npm/dt/typescript-aws-dynamo-helper)](https://img.shields.io/npm/dt/typescript-aws-dynamo-helper)
 
